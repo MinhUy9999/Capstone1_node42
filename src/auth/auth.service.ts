@@ -16,13 +16,23 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(createUserDto.mat_khau, 10);
     const user = await this.prisma.nguoi_dung.create({
       data: {
-        ...createUserDto,
+        email: createUserDto.email,
         mat_khau: hashedPassword,
+        ho_ten: createUserDto.ho_ten,
+        tuoi: createUserDto.tuoi,
       },
     });
-
+  
     const token = this.jwtService.sign({ userId: user.nguoi_dung_id });
-    return { token };
+    return {
+      user: {
+        nguoi_dung_id: user.nguoi_dung_id,
+        email: user.email,
+        ho_ten: user.ho_ten,
+        tuoi: user.tuoi,
+      },
+      token
+    };
   }
 
   async login(loginDto: LoginDto) {
@@ -35,6 +45,14 @@ export class AuthService {
     }
 
     const token = this.jwtService.sign({ userId: user.nguoi_dung_id });
-    return { token };
+    return {
+      user: {
+        nguoi_dung_id: user.nguoi_dung_id,
+        email: user.email,
+        ho_ten: user.ho_ten,
+        tuoi: user.tuoi,
+      },
+      token
+    };
   }
 }
